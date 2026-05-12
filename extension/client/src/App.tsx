@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSettings } from "./hooks/useSettings";
 import { useHeyGenSettings } from "./hooks/useHeyGenSettings";
 import { useAssetsSettings } from "./hooks/useAssetsSettings";
+import { useUpdateCheck } from "./hooks/useUpdateCheck";
 import { TransferredAudio } from "./types";
 import { Settings } from "./components/Settings";
 import { MainPanel } from "./components/MainPanel";
@@ -9,6 +10,8 @@ import { HeyGenPanel } from "./components/HeyGenPanel";
 import { HeyGenSettingsView } from "./components/HeyGenSettings";
 import { AssetsPanel } from "./components/AssetsPanel";
 import { AssetsSettingsView } from "./components/AssetsSettings";
+import { UpdateModal } from "./components/UpdateModal";
+import { UpdateNewPill } from "./components/UpdateNewPill";
 
 function registerKeyboardShortcuts() {
   try {
@@ -38,6 +41,9 @@ export const App = () => {
   const [transferredAudio, setTransferredAudio] = useState<TransferredAudio | null>(null);
   const [heygenBadge, setHeygenBadge] = useState(false);
 
+  const update = useUpdateCheck();
+  const [sessionDismissed, setSessionDismissed] = useState(false);
+
   useEffect(() => {
     registerKeyboardShortcuts();
   }, []);
@@ -45,6 +51,11 @@ export const App = () => {
   const showElSettings = settingsView === "elevenlabs" || (!elConfigured && activeTab === "elevenlabs");
   const showHgSettings = settingsView === "heygen";
   const showAsSettings = settingsView === "assets";
+
+  const updateAvailable = update.state.status === "available";
+  const showUpdateModal =
+    updateAvailable && !update.state.dismissed && !sessionDismissed;
+  const showUpdateNewPill = updateAvailable && update.state.dismissed;
 
   return (
     <div className="app-layout">
@@ -68,6 +79,19 @@ export const App = () => {
         >
           Assets
         </button>
+        {showUpdateNewPill && (
+          <>
+            <div style={{ flex: 1 }} />
+            <UpdateNewPill
+              title={
+                update.state.status === "available"
+                  ? `Version ${update.state.latest.version} available`
+                  : undefined
+              }
+              onClick={() => setSessionDismissed(false)}
+            />
+          </>
+        )}
       </div>
 
       {activeTab === "elevenlabs" && (
@@ -125,6 +149,18 @@ export const App = () => {
             onOpenSettings={() => setSettingsView("assets")}
           />
         )
+      )}
+
+      {showUpdateModal && update.state.status === "available" && (
+        <UpdateModal
+          installed={update.state.installed}
+          latest={update.state.latest}
+          onClose={() => setSessionDismissed(true)}
+          onDismissForever={() => {
+            update.dismiss();
+            setSessionDismissed(true);
+          }}
+        />
       )}
     </div>
   );
