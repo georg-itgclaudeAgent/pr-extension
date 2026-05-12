@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExtensionManifest Version="7.0" ExtensionBundleId="com.attract.pr-extension" ExtensionBundleVersion="1.0.0" ExtensionBundleName="PR extension">
+  <ExtensionList>
+    <Extension Id="com.attract.pr-extension.panel" Version="1.0.0" />
+  </ExtensionList>
+
+  <ExecutionEnvironment>
+    <HostList>
+      <Host Name="PPRO" Version="[24.0,99.9]" />
+    </HostList>
+    <LocaleList>
+      <Locale Code="All" />
+    </LocaleList>
+    <RequiredRuntimeList>
+      <RequiredRuntime Name="CSXS" Version="12.0" />
+    </RequiredRuntimeList>
+  </ExecutionEnvironment>
+
+  <DispatchInfoList>
+    <Extension Id="com.attract.pr-extension.panel">
+      <DispatchInfo>
+        <Resources>
+          <MainPath>./client/dist/index.html</MainPath>
+          <ScriptPath>./host/index.jsx</ScriptPath>
+          <CEFCommandLine>
+            <Parameter>--enable-speech-api</Parameter>
+            <Parameter>--enable-media-stream</Parameter>
+            <Parameter>--allow-file-access-from-files</Parameter>
+            <Parameter>--enable-nodejs</Parameter>
+            <Parameter>--mixed-context</Parameter>
+          </CEFCommandLine>
+        </Resources>
+        <Lifecycle>
+          <AutoVisible>true</AutoVisible>
+        </Lifecycle>
+        <UI>
+          <Type>Panel</Type>
+          <Menu>PR extension</Menu>
+          <Geometry>
+            <Size>
+              <Height>400</Height>
+              <Width>300</Width>
+            </Size>
+            <MinSize>
+              <Height>200</Height>
+              <Width>230</Width>
+            </MinSize>
+            <MaxSize>
+              <Height>2000</Height>
+              <Width>2000</Width>
+            </MaxSize>
+          </Geometry>
+        </UI>
+      </DispatchInfo>
+    </Extension>
+  </DispatchInfoList>
+</ExtensionManifest>
