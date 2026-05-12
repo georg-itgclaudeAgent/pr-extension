@@ -1,0 +1,27 @@
+# Node
+node_modules/
+dist/
+
+# Tauri / Rust
+manager/src-tauri/target/
+manager/dist/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build / artifacts
+*.zip
+*.exe
+
+# Logs
+*.log
+
+# Local config
+.env
+.env.local
