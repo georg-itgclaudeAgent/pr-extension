@@ -1,0 +1,68 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - 'extension-v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: extension/client/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: extension/client
+
+      - name: Build
+        run: npm run build
+        working-directory: extension/client
+
+      - name: Resolve version
+        id: ver
+        run: |
+          # Strip the "extension-v" prefix from the tag → "1.0.0"
+          VERSION="${GITHUB_REF_NAME#extension-v}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "Version: $VERSION"
+
+      - name: Stage runtime files
+        run: |
+          mkdir -p staging/CSXS staging/client/dist staging/host
+          cp -r extension/CSXS/* staging/CSXS/
+          cp -r extension/client/dist/* staging/client/dist/
+          cp -r extension/host/* staging/host/
+
+      - name: Create zip
+        run: |
+          cd staging
+          zip -r "../pr-extension-${{ steps.ver.outputs.version }}.zip" .
+          cd ..
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          SUM=$(sha256sum "pr-extension-${{ steps.ver.outputs.version }}.zip" | awk '{print $1}')
+          echo "sha256=${SUM}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "pr-extension-${{ steps.ver.outputs.version }}.zip" \
+            --title "Extension ${{ steps.ver.outputs.version }}" \
+            --generate-notes \
+            --notes "$(printf 'SHA256: %s\n\n' '${{ steps.sha.outputs.sha256 }}')$(gh api /repos/${{ github.repository }}/releases/generate-notes -f tag_name=${GITHUB_REF_NAME} --jq .body 2>/dev/null || echo '')"
