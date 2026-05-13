@@ -57,8 +57,9 @@ jobs:
         shell: bash
         run: |
           BUNDLE_DIR="manager/src-tauri/target/release/bundle/nsis"
-          NSIS=$(find "$BUNDLE_DIR" -name '*-setup.exe' -print -quit)
-          SIG=$(find "$BUNDLE_DIR" -name '*-setup.exe.sig' -print -quit)
+          # Tauri 2.x names installers like: "App Name_1.2.3_x64-setup.exe"
+          NSIS=$(find "$BUNDLE_DIR" -name '*setup.exe' -not -name '*.sig' -print -quit)
+          SIG=$(find "$BUNDLE_DIR" -name '*setup.exe.sig' -print -quit)
           if [ -z "$NSIS" ] || [ -z "$SIG" ]; then
             echo "NSIS installer or signature not found! Listing:"
             ls -R manager/src-tauri/target/release/bundle/
