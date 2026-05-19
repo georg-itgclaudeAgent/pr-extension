@@ -12,13 +12,11 @@ function getCS(): CSInterface {
   return _cs;
 }
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
+function nodeRequire<T = any>(id: string): T {
+  if (!(window as any).cep_node) {
+    throw new Error("cep_node not available — extension must run inside CEP with --enable-nodejs");
   }
-  return btoa(binary);
+  return (window as any).cep_node.require(id);
 }
 
 function evalScriptAsync(script: string): Promise<string> {
@@ -39,22 +37,43 @@ export async function getSelectedCaptionText(): Promise<string | null> {
   return result;
 }
 
+/**
+ * Write an ArrayBuffer directly to disk via cep_node's fs module — bypasses
+ * ExtendScript's slow naive base64 decode that froze the panel for large
+ * audio buffers.
+ */
+function writeBufferToFile(
+  data: ArrayBuffer,
+  directory: string,
+  extension: string
+): string {
+  const fs = nodeRequire("fs");
+  const path = nodeRequire("path");
+
+  if (!directory) throw new Error("No output directory configured.");
+  if (!fs.existsSync(directory)) {
+    throw new Error(`Directory does not exist: ${directory}`);
+  }
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  const filename = `pr-extension-${timestamp}${extension}`;
+  const filePath = path.join(directory, filename);
+  fs.writeFileSync(filePath, Buffer.from(data));
+  return filePath;
+}
+
 export async function saveAudioFile(
   audioData: ArrayBuffer,
   directory: string
 ): Promise<string> {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const filename = `pr-extension-${timestamp}.mp3`;
-  const base64 = arrayBufferToBase64(audioData);
-  const escapedDir = directory.replace(/\\/g, "\\\\");
-  // Pass base64 data to ExtendScript for file writing
-  const result = await evalScriptAsync(
-    'saveAudioFile("' + escapedDir + '", "' + filename + '", "' + base64 + '")'
-  );
-  if (result.startsWith("Error:")) {
-    throw new Error(result);
-  }
-  return result; // returns the full file path
+  return writeBufferToFile(audioData, directory, ".mp3");
+}
+
+export async function saveVideoFile(
+  videoData: ArrayBuffer,
+  directory: string
+): Promise<string> {
+  return writeBufferToFile(videoData, directory, ".mp4");
 }
 
 export async function importAndInsertAtPlayhead(
@@ -78,23 +97,6 @@ export async function pickOutputDirectory(): Promise<{
   // CEP doesn't use persistent tokens — just return the path for both fields
   // to maintain interface compatibility with the Settings component
   return { path: result, token: result };
-}
-
-export async function saveVideoFile(
-  videoData: ArrayBuffer,
-  directory: string
-): Promise<string> {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
-  const filename = `pr-extension-${timestamp}.mp4`;
-  const base64 = arrayBufferToBase64(videoData);
-  const escapedDir = directory.replace(/\\/g, "\\\\");
-  const result = await evalScriptAsync(
-    'saveVideoFile("' + escapedDir + '", "' + filename + '", "' + base64 + '")'
-  );
-  if (result.startsWith("Error:")) {
-    throw new Error(result);
-  }
-  return result;
 }
 
 export async function insertAssetAtPlayhead(
