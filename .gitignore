@@ -4,6 +4,7 @@ dist/
 
 # Tauri / Rust
 manager/src-tauri/target/
+manager/src-tauri/gen/schemas/
 manager/dist/
 
 # Editor
