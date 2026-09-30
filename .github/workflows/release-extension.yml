@@ -64,5 +64,6 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" \
             "pr-extension-${{ steps.ver.outputs.version }}.zip" \
             --title "Extension ${{ steps.ver.outputs.version }}" \
+            --latest=false \
             --generate-notes \
             --notes "$(printf 'SHA256: %s\n\n' '${{ steps.sha.outputs.sha256 }}')$(gh api /repos/${{ github.repository }}/releases/generate-notes -f tag_name=${GITHUB_REF_NAME} --jq .body 2>/dev/null || echo '')"

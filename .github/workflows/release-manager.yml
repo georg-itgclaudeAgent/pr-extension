@@ -106,4 +106,5 @@ jobs:
             "${{ steps.artifacts.outputs.sig }}" \
             "latest.json" \
             --title "Manager ${{ steps.ver.outputs.version }}" \
+            --latest \
             --generate-notes
