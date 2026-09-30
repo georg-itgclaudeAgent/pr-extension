@@ -10,6 +10,14 @@ offers each extension releases from its own channel.
 | `geniuscut-v` | Genius Cut CEP panel — its release workflow arrives with the Genius Cut Phase 1 build. Until the first `geniuscut-v` release exists, the Manager shows Genius Cut as "Not released yet". |
 | `manager-v` | The Manager desktop app |
 
+**Only Manager releases may be marked "Latest" on GitHub.** The Manager's
+auto-updater reads `releases/latest/download/latest.json`, so if an extension
+release becomes Latest, every Manager's update check 404s. The extension
+workflow passes `--latest=false` and the Manager workflow passes `--latest`;
+any new channel's workflow must also pass `--latest=false`. If Latest is ever
+wrong, fix it on GitHub: edit the newest `manager-v` release → tick
+"Set as the latest release".
+
 To add another extension to the Manager: add an entry to `EXTENSIONS` with a unique
 id and a tag prefix that isn't a prefix of any other, then release on that channel.
 
