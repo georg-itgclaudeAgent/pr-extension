@@ -1,5 +1,18 @@
 # Release Process
 
+One repo, three release channels, told apart by tag prefix. The Manager reads its
+list of extensions from `manager/src-tauri/src/paths.rs` (`EXTENSIONS`) and only
+offers each extension releases from its own channel.
+
+| Tag prefix | What it releases |
+|---|---|
+| `extension-v` | PR Extension CEP panel |
+| `geniuscut-v` | Genius Cut CEP panel — its release workflow arrives with the Genius Cut Phase 1 build. Until the first `geniuscut-v` release exists, the Manager shows Genius Cut as "Not released yet". |
+| `manager-v` | The Manager desktop app |
+
+To add another extension to the Manager: add an entry to `EXTENSIONS` with a unique
+id and a tag prefix that isn't a prefix of any other, then release on that channel.
+
 ## Cutting an Extension release
 
 1. From `pr-extension/extension/`, ensure `npm run build` succeeds locally.
@@ -17,7 +30,7 @@
 ## Cutting a Manager release
 
 1. From `pr-extension/manager/`, ensure `npm run tauri build` succeeds locally.
-2. Bump `version` in `manager/src-tauri/tauri.conf.json` and `manager/package.json`.
+2. Bump `version` in `manager/src-tauri/tauri.conf.json`, `manager/src-tauri/Cargo.toml`, `manager/package.json`, and `MANAGER_VERSION` in `manager/src/App.tsx`.
 3. Commit: `chore(manager): bump to v0.2.0`.
 4. Push, tag `manager-v0.2.0`, push tag.
 5. The `release-manager.yml` workflow runs: builds Tauri app on Windows, signs the updater payload with `TAURI_PRIVATE_KEY`, creates a GitHub release with the `.exe` + `latest.json` attached.
