@@ -2,12 +2,13 @@
 
 ## One-time setup
 
-1. Download the latest **PR Extension Manager** installer:
-   - Go to https://github.com/georg-itgclaudeAgent/pr-extension/releases
-   - Find the latest release tagged `manager-vX.Y.Z`
-   - Download `PRExtensionManager-Setup-X.Y.Z.exe`
-2. Double-click the `.exe` to install. Windows SmartScreen may warn — click "More info" → "Run anyway" (the installer is signed but the binary itself is not code-signed; this is a known limitation).
-3. Launch the **PR Extension Manager** from Start menu.
+1. Download the latest **Genius Installer Manager** installer:
+   - Go to https://github.com/georg-itgclaudeAgent/genius-installer-manager/releases/latest
+   - Download `GeniusInstallerManager-Setup-X.Y.Z.exe`
+2. Double-click the `.exe` to install. Windows SmartScreen may warn — click "More info" → "Run anyway" (the updater payload is signed but the binary itself is not code-signed; this is a known limitation).
+3. Launch **Genius Installer Manager** from the Start menu.
+
+Already have the old **PR Extension Manager**? It updates itself to Genius Installer Manager and removes the old copy. Nothing to do.
 
 ## Installing the PR Extension
 
@@ -27,4 +28,4 @@ When a new version is released:
 
 ## Uninstalling
 
-In the Manager, click **Uninstall** on the PR Extension card. This removes the files from Premiere's extensions folder. The Manager itself stays installed; use Windows "Add or Remove Programs" to remove the Manager.
+In the Manager, click **Uninstall** on the PR Extension card. This removes the files from Premiere's extensions folder. The Manager itself stays installed; use Windows "Add or Remove Programs" to remove Genius Installer Manager.

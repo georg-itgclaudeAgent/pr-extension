@@ -1,5 +1,5 @@
 // GitHub releases API client used by the PR Extension panel to detect updates.
-// The Manager has its own copy of this logic (manager/src/api/github.ts).
+// Genius Installer Manager has its own copy of this logic (genius-installer-manager repo, src/api/github.ts).
 // They are intentionally not shared — both must work standalone.
 
 const REPO_OWNER = "georg-itgclaudeAgent";

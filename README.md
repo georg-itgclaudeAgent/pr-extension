@@ -8,30 +8,22 @@ Adobe Premiere Pro CEP extension by itGenius. Three tabs:
 
 ## For users
 
-Install the **PR Extension Manager** (a small Windows desktop app) once. The Manager installs and updates each itGenius Premiere Pro extension independently:
-
-- **PR Extension** — the three tabs above
-- **Genius Cut** — transcript-driven trimming (coming soon)
+Install **Genius Installer Manager** once
+([download](https://github.com/georg-itgclaudeAgent/genius-installer-manager/releases/latest)).
+It installs and updates PR Extension, and other itGenius Premiere Pro extensions.
 
 See [docs/installation.md](docs/installation.md) for the step-by-step.
 
 ## For maintainers
 
-This repo has three release channels distinguished by tag prefix:
-
-- `extension-vX.Y.Z` — releases of the CEP extension itself
-- `geniuscut-vX.Y.Z` — releases of the Genius Cut CEP panel
-- `manager-vX.Y.Z` — releases of the Tauri Manager app
-
-See [docs/release-process.md](docs/release-process.md) for how to cut a release.
+Releases are tagged `extension-vX.Y.Z`. See [docs/release-process.md](docs/release-process.md).
 
 ## Repository layout
 
 ```
 extension/   the CEP extension (Vite + React + ExtendScript)
-manager/     the Tauri desktop app (Rust + React)
 docs/        installation + release guides
-.github/     CI workflows
+.github/     CI workflow
 ```
 
 ## License

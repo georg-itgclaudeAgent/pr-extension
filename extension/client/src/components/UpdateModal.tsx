@@ -48,7 +48,7 @@ export const UpdateModal: React.FC<UpdateModalProps> = ({
           </div>
         )}
         <div className="update-modal-hint">
-          Open the Extension Manager to install this update.
+          Open Genius Installer Manager to install this update.
         </div>
         <button className="update-modal-close" onClick={onClose}>Close</button>
         <button className="update-modal-dismiss-forever" onClick={onDismissForever}>
